@@ -6,6 +6,7 @@ import { DashboardCard, DashboardShell, StatusBadge } from "@/components/dashboa
 const nav = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/agents", label: "Manage Agents" },
+  { href: "/admin/rates", label: "Rate Slabs" },
   { href: "/admin/shipments", label: "Approve Trackers" },
   { href: "/admin/kyc", label: "Agent KYC" },
 ];

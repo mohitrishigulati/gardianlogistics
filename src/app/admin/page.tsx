@@ -7,6 +7,7 @@ import { DashboardCard, DashboardShell } from "@/components/dashboard/DashboardS
 const nav = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/agents", label: "Manage Agents" },
+  { href: "/admin/rates", label: "Rate Slabs" },
   { href: "/admin/shipments", label: "Approve Trackers" },
   { href: "/admin/kyc", label: "Agent KYC" },
 ];
@@ -29,7 +30,7 @@ export default function AdminDashboard() {
   return (
     <DashboardShell title="Admin Panel" nav={nav}>
       <h1 className="mb-6 text-2xl font-bold text-navy-900">Admin Dashboard</h1>
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <DashboardCard>
           <p className="text-sm text-navy-500">Pending Tracker Approvals</p>
           <p className="text-3xl font-bold">{counts.pendingTrackers}</p>
@@ -49,6 +50,13 @@ export default function AdminDashboard() {
           <p className="mt-2 text-sm text-navy-600">Create agents by state & pincode</p>
           <Link href="/admin/agents" className="mt-3 inline-block text-sm text-accent-600 hover:underline">
             Manage agents →
+          </Link>
+        </DashboardCard>
+        <DashboardCard>
+          <p className="text-sm text-navy-500">Rate Slab Sheets</p>
+          <p className="mt-2 text-sm text-navy-600">Customize country weight slabs for agents</p>
+          <Link href="/admin/rates" className="mt-3 inline-block text-sm text-accent-600 hover:underline">
+            Manage rate slabs →
           </Link>
         </DashboardCard>
       </div>

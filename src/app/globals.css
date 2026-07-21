@@ -33,3 +33,20 @@
     @apply py-16 md:py-20;
   }
 }
+
+@media print {
+  body {
+    @apply bg-white text-navy-900;
+  }
+
+  .document-print {
+    box-shadow: none !important;
+  }
+
+  header,
+  footer,
+  nav,
+  .print\\:hidden {
+    display: none !important;
+  }
+}

@@ -3,14 +3,12 @@ import { BookingStatus, KycStatus, Role, ShipmentStatus } from "@/lib/constants/
 import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/auth/auth-options";
 import {
-  calculateBoxPrice,
   chargeableWeightKg,
-  DEFAULT_PRICE_PER_KG,
   generateTrackingNumber,
   volumetricWeightKg,
 } from "@/lib/shipment-utils";
-import { quoteBoxPrice, type PricingMode } from "@/lib/pricing/dpd-slabs";
-import { isFranceDpdCountry } from "@/data/rates/dpd-europe-duty-paid";
+import { lookupSlabPrice, findZoneForCountry } from "@/lib/pricing/rate-slabs";
+import { calcShipmentTotals } from "@/lib/shipment-pricing";
 import { jsonOk, jsonError, handleApiError } from "@/lib/api-utils";
 
 interface GoodsInput {
@@ -25,7 +23,8 @@ interface BoxInput {
   widthCm: number;
   heightCm: number;
   actualWeightKg: number;
-  pricePerKg?: number;
+  slabWeightKg?: number;
+  customerCharge?: number;
   goods: GoodsInput[];
 }
 
@@ -58,11 +57,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await requireRole([Role.AGENT]);
     const body = await request.json();
-    const { bookingId, boxes, pricingMode = "per_kg" } = body as {
-      bookingId: string;
-      boxes: BoxInput[];
-      pricingMode?: PricingMode;
-    };
+    const { bookingId, boxes } = body as { bookingId: string; boxes: BoxInput[] };
 
     const profile = await prisma.agentProfile.findUnique({
       where: { userId: session.user.id },
@@ -82,16 +77,15 @@ export async function POST(request: NextRequest) {
     if (!booking) return jsonError("Booking not found.", 404);
     if (booking.shipment) return jsonError("Tracker receipt already created for this booking.", 409);
 
-    if (pricingMode === "dpd_slab" && !isFranceDpdCountry(booking.destinationCountry)) {
-      return jsonError("DPD slab pricing is only available for France, Czech Republic, and Denmark.");
-    }
-
     for (const box of boxes) {
       if (!box.lengthCm || !box.widthCm || !box.heightCm || !box.actualWeightKg) {
         return jsonError("Each box must have dimensions and weight.");
       }
       if (!box.goods?.length) {
         return jsonError("Each box must have at least one goods item listed.");
+      }
+      if (box.customerCharge === undefined || box.customerCharge < 0) {
+        return jsonError("Each box must have a valid customer charge.");
       }
     }
 
@@ -104,49 +98,56 @@ export async function POST(request: NextRequest) {
       attempts++;
     }
 
-    let totalPrice = 0;
-    const boxRecords = boxes.map((box, index) => {
-      const volWeight = volumetricWeightKg(box.lengthCm, box.widthCm, box.heightCm);
-      const chargeable = chargeableWeightKg(box.actualWeightKg, box.lengthCm, box.widthCm, box.heightCm);
+    const boxRecords = await Promise.all(
+      boxes.map(async (box, index) => {
+        const volWeight = volumetricWeightKg(box.lengthCm, box.widthCm, box.heightCm);
+        const chargeable = chargeableWeightKg(box.actualWeightKg, box.lengthCm, box.widthCm, box.heightCm);
 
-      const quote = quoteBoxPrice({
-        pricingMode,
-        destinationCountry: booking.destinationCountry,
-        actualKg: box.actualWeightKg,
-        lengthCm: box.lengthCm,
-        widthCm: box.widthCm,
-        heightCm: box.heightCm,
-        pricePerKg: box.pricePerKg ?? DEFAULT_PRICE_PER_KG,
-      });
+        let slabWeightKg = box.slabWeightKg ?? null;
+        let referenceSlabPrice: number | null = null;
 
-      const boxPrice = quote?.price ?? calculateBoxPrice(chargeable, box.pricePerKg ?? DEFAULT_PRICE_PER_KG);
-      const pricePerKg =
-        quote?.pricingMode === "dpd_slab"
-          ? Math.round((boxPrice / chargeable) * 100) / 100
-          : box.pricePerKg ?? DEFAULT_PRICE_PER_KG;
+        if (slabWeightKg) {
+          const lookup = await lookupSlabPrice(booking.destinationCountry, slabWeightKg);
+          if (lookup) {
+            slabWeightKg = lookup.weightKg;
+            referenceSlabPrice = lookup.referencePrice;
+          }
+        }
 
-      totalPrice += boxPrice;
+        const boxPrice = Math.round(box.customerCharge! * 100) / 100;
 
-      return {
-        boxNumber: index + 1,
-        lengthCm: box.lengthCm,
-        widthCm: box.widthCm,
-        heightCm: box.heightCm,
-        actualWeightKg: box.actualWeightKg,
-        volumetricWeightKg: volWeight,
-        chargeableWeightKg: chargeable,
-        pricePerKg,
-        boxPrice,
-        goods: {
-          create: box.goods.map((g) => ({
-            description: g.description,
-            quantity: g.quantity ?? 1,
-            declaredValue: g.declaredValue,
-            hsCode: g.hsCode,
-          })),
-        },
-      };
-    });
+        return {
+          boxNumber: index + 1,
+          lengthCm: box.lengthCm,
+          widthCm: box.widthCm,
+          heightCm: box.heightCm,
+          actualWeightKg: box.actualWeightKg,
+          volumetricWeightKg: volWeight,
+          chargeableWeightKg: chargeable,
+          slabWeightKg,
+          referenceSlabPrice,
+          pricePerKg: chargeable > 0 ? Math.round((boxPrice / chargeable) * 100) / 100 : 0,
+          boxPrice,
+          goods: {
+            create: box.goods.map((g) => ({
+              description: g.description,
+              quantity: g.quantity ?? 1,
+              declaredValue: g.declaredValue,
+              hsCode: g.hsCode,
+            })),
+          },
+        };
+      })
+    );
+
+    const zone = await findZoneForCountry(booking.destinationCountry);
+    const currency = zone?.currency ?? "INR";
+    const totals = calcShipmentTotals(
+      boxRecords.map((box) => ({
+        boxPrice: box.boxPrice,
+        referenceSlabPrice: box.referenceSlabPrice,
+      }))
+    );
 
     const shipment = await prisma.shipment.create({
       data: {
@@ -154,7 +155,10 @@ export async function POST(request: NextRequest) {
         bookingId: booking.id,
         agentId: profile.id,
         status: ShipmentStatus.PENDING_ADMIN,
-        totalPrice: Math.round(totalPrice * 100) / 100,
+        totalPrice: totals.totalCustomerCharge,
+        totalCompanyCharge: totals.totalCompanyCharge,
+        agentProfit: totals.agentProfit,
+        currency,
         boxes: { create: boxRecords },
       },
       include: {

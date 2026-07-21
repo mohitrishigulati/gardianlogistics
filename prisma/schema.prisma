@@ -83,20 +83,23 @@ model ShipmentBooking {
 }
 
 model Shipment {
-  id             String   @id @default(cuid())
-  trackingNumber String   @unique
-  bookingId      String?  @unique
-  booking        ShipmentBooking? @relation(fields: [bookingId], references: [id])
-  agentId        String
-  agent          AgentProfile @relation(fields: [agentId], references: [id])
-  status         String   @default("DRAFT")
-  totalPrice     Float    @default(0)
-  adminNotes     String?
-  approvedAt     DateTime?
-  approvedById   String?
-  approvedBy     User?    @relation("ApprovedBy", fields: [approvedById], references: [id])
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  trackingNumber     String   @unique
+  bookingId          String?  @unique
+  booking            ShipmentBooking? @relation(fields: [bookingId], references: [id])
+  agentId            String
+  agent              AgentProfile @relation(fields: [agentId], references: [id])
+  status             String   @default("DRAFT")
+  totalPrice         Float    @default(0)
+  totalCompanyCharge Float    @default(0)
+  agentProfit        Float    @default(0)
+  currency           String   @default("INR")
+  adminNotes         String?
+  approvedAt         DateTime?
+  approvedById       String?
+  approvedBy         User?    @relation("ApprovedBy", fields: [approvedById], references: [id])
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   boxes Box[]
 }
@@ -112,10 +115,35 @@ model Box {
   actualWeightKg     Float
   volumetricWeightKg Float
   chargeableWeightKg Float
+  slabWeightKg       Int?
+  referenceSlabPrice Float?
   pricePerKg         Float  @default(0)
   boxPrice           Float  @default(0)
 
   goods GoodsItem[]
+}
+
+model RateZone {
+  id          String     @id @default(cuid())
+  name        String
+  countries   String
+  serviceName String     @default("DPD Europe — Duty Paid")
+  currency    String     @default("INR")
+  isActive    Boolean    @default(true)
+  sortOrder   Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  slabs       RateSlab[]
+}
+
+model RateSlab {
+  id       String   @id @default(cuid())
+  zoneId   String
+  zone     RateZone @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  weightKg Int
+  price    Float
+
+  @@unique([zoneId, weightKg])
 }
 
 model GoodsItem {

@@ -23,7 +23,7 @@ export function DashboardShell({ title, nav, children }: DashboardShellProps) {
 
   return (
     <div className="min-h-screen bg-surface">
-      <header className="border-b border-navy-100 bg-white">
+      <header className="border-b border-navy-100 bg-white print:hidden">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-4">
             <Link href="/">
@@ -50,7 +50,7 @@ export function DashboardShell({ title, nav, children }: DashboardShellProps) {
       </header>
 
       <div className="mx-auto flex max-w-7xl gap-6 px-4 py-6 sm:px-6">
-        <aside className="hidden w-56 shrink-0 md:block">
+        <aside className="hidden w-56 shrink-0 md:block print:hidden">
           <nav className="sticky top-6 space-y-1 rounded-xl border border-navy-100 bg-white p-3 shadow-card">
             {nav.map((item) => {
               const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
