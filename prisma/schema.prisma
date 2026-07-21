@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  image        String?
+  role         String   @default("USER")
+  companyId    String?  @unique
+  loginPhone   String?  @unique
+  passwordHash String?
+  phone        String?
+  address      String?
+  city         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  agentProfile AgentProfile?
+  bookings     ShipmentBooking[] @relation("CustomerBookings")
+  accounts     Account[]
+  sessions     Session[]
+
+  approvedShipments Shipment[] @relation("ApprovedBy")
+  managedAgents     AgentProfile[] @relation("SubAdminAgents")
+  createdAgents     AgentProfile[] @relation("CreatedAgents")
+}
+
+model AgentProfile {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName   String?
+  address        String
+  city           String
+  state          String?
+  pincode        String?
+  phone          String
+  kycStatus      String    @default("NOT_SUBMITTED")
+  idType         String?
+  idNumber       String?
+  idDocumentUrl  String?
+  kycSubmittedAt DateTime?
+  kycReviewedAt  DateTime?
+  kycNotes       String?
+  subAdminId     String?
+  subAdmin       User?     @relation("SubAdminAgents", fields: [subAdminId], references: [id])
+  createdById    String?
+  createdBy      User?     @relation("CreatedAgents", fields: [createdById], references: [id])
+  isActive       Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  bookings  ShipmentBooking[]
+  shipments Shipment[]
+}
+
+model ShipmentBooking {
+  id                 String   @id @default(cuid())
+  customerId         String
+  customer           User     @relation("CustomerBookings", fields: [customerId], references: [id])
+  agentId            String
+  agent              AgentProfile @relation(fields: [agentId], references: [id])
+  pickupType         String
+  pickupAddress      String?
+  pickupCity         String?
+  destination        String
+  destinationCountry String
+  recipientName      String
+  recipientPhone     String
+  notes              String?
+  status             String   @default("PENDING")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  shipment Shipment?
+}
+
+model Shipment {
+  id             String   @id @default(cuid())
+  trackingNumber String   @unique
+  bookingId      String?  @unique
+  booking        ShipmentBooking? @relation(fields: [bookingId], references: [id])
+  agentId        String
+  agent          AgentProfile @relation(fields: [agentId], references: [id])
+  status         String   @default("DRAFT")
+  totalPrice     Float    @default(0)
+  adminNotes     String?
+  approvedAt     DateTime?
+  approvedById   String?
+  approvedBy     User?    @relation("ApprovedBy", fields: [approvedById], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  boxes Box[]
+}
+
+model Box {
+  id                 String @id @default(cuid())
+  shipmentId         String
+  shipment           Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  boxNumber          Int
+  lengthCm           Float
+  widthCm            Float
+  heightCm           Float
+  actualWeightKg     Float
+  volumetricWeightKg Float
+  chargeableWeightKg Float
+  pricePerKg         Float  @default(0)
+  boxPrice           Float  @default(0)
+
+  goods GoodsItem[]
+}
+
+model GoodsItem {
+  id            String @id @default(cuid())
+  boxId         String
+  box           Box    @relation(fields: [boxId], references: [id], onDelete: Cascade)
+  description   String
+  quantity      Int    @default(1)
+  declaredValue Float?
+  hsCode        String?
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

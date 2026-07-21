@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <rect x="0" y="0" width="1200" height="630" fill="url(#grad)" opacity="0.4"/>
+  <defs>
+    <radialGradient id="grad" cx="0.2" cy="0.5" r="0.6">
+      <stop stop-color="#4338ca"/>
+      <stop offset="1" stop-color="#0f172a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <path d="M120 200L60 230v80c0 40 30 72 70 75 40-3 70-35 70-75v-80l-70-30z" fill="#312e81"/>
+  <path d="M120 220l50 22v50c0 28-22 50-50 52-28-2-50-24-50-52v-50l50-22z" fill="#4338ca"/>
+  <path d="M120 240l-30 40h20v30l30-40h-20v-30z" fill="#f59e0b"/>
+  <text x="220" y="280" font-family="system-ui,sans-serif" font-size="64" font-weight="700" fill="#ffffff">Gardian Logistics</text>
+  <text x="220" y="340" font-family="system-ui,sans-serif" font-size="28" fill="#94a3b8">Global Shipping. Best Rates. Trusted Since 2015.</text>
+</svg>
