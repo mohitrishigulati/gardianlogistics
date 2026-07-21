@@ -56,6 +56,14 @@ export function Footer() {
               <a href={`mailto:${delhi.email}`} className="block hover:text-accent-400">
                 {delhi.email}
               </a>
+              <a
+                href={`https://wa.me/${siteConfig.whatsapp.replace(/\D/g, "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-1.5 text-green-400 hover:text-green-300"
+              >
+                WhatsApp Support
+              </a>
             </address>
           </div>
 

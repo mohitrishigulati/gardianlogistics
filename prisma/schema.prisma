@@ -80,6 +80,19 @@ model ShipmentBooking {
   updatedAt          DateTime @updatedAt
 
   shipment Shipment?
+  review     OrderReview?
+}
+
+model OrderReview {
+  id         String          @id @default(cuid())
+  bookingId  String          @unique
+  booking    ShipmentBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  customerId String
+  agentId    String
+  rating     Int
+  comment    String?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
 }
 
 model Shipment {

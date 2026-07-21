@@ -10,8 +10,11 @@ export async function GET() {
     const bookings = await prisma.shipmentBooking.findMany({
       where: { customerId: session.user.id },
       include: {
-        agent: { include: { user: { select: { name: true } } } },
+        agent: {
+          include: { user: { select: { name: true } } },
+        },
         shipment: { select: { trackingNumber: true, status: true, totalPrice: true } },
+        review: true,
       },
       orderBy: { createdAt: "desc" },
     });
