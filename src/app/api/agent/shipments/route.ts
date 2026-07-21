@@ -9,6 +9,8 @@ import {
   generateTrackingNumber,
   volumetricWeightKg,
 } from "@/lib/shipment-utils";
+import { quoteBoxPrice, type PricingMode } from "@/lib/pricing/dpd-slabs";
+import { isFranceDpdCountry } from "@/data/rates/dpd-europe-duty-paid";
 import { jsonOk, jsonError, handleApiError } from "@/lib/api-utils";
 
 interface GoodsInput {
@@ -56,7 +58,11 @@ export async function POST(request: NextRequest) {
   try {
     const session = await requireRole([Role.AGENT]);
     const body = await request.json();
-    const { bookingId, boxes } = body as { bookingId: string; boxes: BoxInput[] };
+    const { bookingId, boxes, pricingMode = "per_kg" } = body as {
+      bookingId: string;
+      boxes: BoxInput[];
+      pricingMode?: PricingMode;
+    };
 
     const profile = await prisma.agentProfile.findUnique({
       where: { userId: session.user.id },
@@ -75,6 +81,10 @@ export async function POST(request: NextRequest) {
     });
     if (!booking) return jsonError("Booking not found.", 404);
     if (booking.shipment) return jsonError("Tracker receipt already created for this booking.", 409);
+
+    if (pricingMode === "dpd_slab" && !isFranceDpdCountry(booking.destinationCountry)) {
+      return jsonError("DPD slab pricing is only available for France, Czech Republic, and Denmark.");
+    }
 
     for (const box of boxes) {
       if (!box.lengthCm || !box.widthCm || !box.heightCm || !box.actualWeightKg) {
@@ -98,8 +108,23 @@ export async function POST(request: NextRequest) {
     const boxRecords = boxes.map((box, index) => {
       const volWeight = volumetricWeightKg(box.lengthCm, box.widthCm, box.heightCm);
       const chargeable = chargeableWeightKg(box.actualWeightKg, box.lengthCm, box.widthCm, box.heightCm);
-      const pricePerKg = box.pricePerKg ?? DEFAULT_PRICE_PER_KG;
-      const boxPrice = calculateBoxPrice(chargeable, pricePerKg);
+
+      const quote = quoteBoxPrice({
+        pricingMode,
+        destinationCountry: booking.destinationCountry,
+        actualKg: box.actualWeightKg,
+        lengthCm: box.lengthCm,
+        widthCm: box.widthCm,
+        heightCm: box.heightCm,
+        pricePerKg: box.pricePerKg ?? DEFAULT_PRICE_PER_KG,
+      });
+
+      const boxPrice = quote?.price ?? calculateBoxPrice(chargeable, box.pricePerKg ?? DEFAULT_PRICE_PER_KG);
+      const pricePerKg =
+        quote?.pricingMode === "dpd_slab"
+          ? Math.round((boxPrice / chargeable) * 100) / 100
+          : box.pricePerKg ?? DEFAULT_PRICE_PER_KG;
+
       totalPrice += boxPrice;
 
       return {
