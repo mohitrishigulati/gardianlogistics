@@ -22,8 +22,7 @@ export default function AboutPage() {
         <div className="container-site">
           <SectionHeading
             eyebrow="About Gardian Logistics"
-            title="Your Global Shipping Partner Since 2015"
-            description="For over a decade, we've helped businesses and individuals ship smarter — combining competitive rates, dual India-UK presence, and unified tracking across leading carrier networks."
+            title="A Decade of Getting Shipments There"
             light
             align="center"
           />
@@ -31,41 +30,25 @@ export default function AboutPage() {
       </section>
 
       <div className="container-site section-padding">
-        <div className="mx-auto grid max-w-5xl gap-12 lg:grid-cols-2">
-          <section>
-            <h2 className="text-2xl font-bold text-navy-900">Our Story</h2>
-            <p className="mt-4 leading-relaxed text-navy-600">
-              Gardian Logistics was founded in {siteConfig.founded} in New Delhi with a simple
-              mission: make international shipping accessible and affordable. What started as a
-              small courier agency has grown into a trusted aggregator serving exporters, e-commerce
-              sellers, and enterprises across India and the United Kingdom.
-            </p>
-            <p className="mt-4 leading-relaxed text-navy-600">
-              Rather than locking customers into a single carrier, we maintain partnerships with
-              leading global logistics providers — allowing us to compare routes, service levels,
-              and pricing to recommend the best option for each shipment.
-            </p>
-          </section>
+        <div className="mx-auto max-w-3xl">
+          <p className="leading-relaxed text-navy-600">
+            Gardian Logistics was founded in {siteConfig.founded} with a simple idea: international
+            shipping shouldn&apos;t mean choosing between speed, reliability, and price. Instead of
+            operating as a single carrier, we built a network — working with established global
+            courier and freight partners to compare rates and routes for every shipment, then
+            passing the savings and speed on to you.
+          </p>
+          <p className="mt-4 leading-relaxed text-navy-600">
+            Today we operate from two hubs: our headquarters in New Delhi, India, and our UK office
+            in London — giving us on-the-ground coordination for one of the world&apos;s busiest
+            India–UK–Europe trade corridors, plus the reach to ship almost anywhere else through
+            our partner network.
+          </p>
 
-          <section>
-            <h2 className="text-2xl font-bold text-navy-900">Our Mission</h2>
-            <p className="mt-4 leading-relaxed text-navy-600">
-              To deliver world-class courier and freight services at the most competitive rates,
-              backed by transparent tracking and personalized support from real people — not bots.
-            </p>
-            <ul className="mt-6 space-y-3">
-              {[
-                "Best international shipping rates via multi-carrier comparison",
-                "10+ years of cross-border logistics expertise",
-                "Dual presence in India and the UK for seamless coordination",
-                "Real-time tracking unified across partner networks",
-              ].map((item) => (
-                <li key={item} className="flex gap-2 text-sm text-navy-700">
-                  <span className="text-accent-500">✓</span> {item}
-                </li>
-              ))}
-            </ul>
-          </section>
+          <blockquote className="mt-8 border-l-4 border-accent-400 pl-6 italic text-navy-700">
+            To make international shipping simple, transparent, and affordable — without you ever
+            having to manage five carrier relationships yourself.
+          </blockquote>
         </div>
 
         <section className="mx-auto mt-16 max-w-5xl">
@@ -109,7 +92,10 @@ export default function AboutPage() {
                 ))}
               </address>
               <p className="mt-3 text-sm text-navy-600">{office.hours}</p>
-              <Link href="/contact" className="mt-4 inline-block text-sm font-semibold text-accent-600 hover:text-accent-500">
+              <Link
+                href="/contact"
+                className="mt-4 inline-block text-sm font-semibold text-accent-600 hover:text-accent-500"
+              >
                 Contact this office →
               </Link>
             </div>

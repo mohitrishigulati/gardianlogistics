@@ -22,11 +22,21 @@ export function Hero() {
             {siteConfig.tagline}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-navy-200">
-            We partner with leading global carriers to deliver your shipments worldwide — at the
-            most competitive international rates. Real-time tracking. Personalized support.
+            {siteConfig.heroSubhead}
           </p>
           <div className="mx-auto mt-10 max-w-xl">
             <TrackingWidget />
+          </div>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
+            <Link href="/track" className="btn-primary px-8 py-3 text-base">
+              Track Shipment
+            </Link>
+            <Link
+              href="/quote"
+              className="btn-secondary border-navy-600 bg-transparent text-white hover:bg-navy-800"
+            >
+              Get a Quote
+            </Link>
           </div>
           <p className="mt-4 text-sm text-navy-400">
             Try demo:{" "}

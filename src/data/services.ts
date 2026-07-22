@@ -13,7 +13,8 @@ export const services: Service[] = [
     id: "international-courier",
     slug: "international-courier",
     title: "International Courier",
-    shortDescription: "Door-to-door express delivery to 220+ countries with multi-carrier options.",
+    shortDescription:
+      "Door-to-door express delivery to 220+ countries, with multiple carrier options so you're never locked into one price.",
     description:
       "Ship parcels and documents worldwide through our aggregator network. We compare rates across leading global carriers to find you the most competitive international courier option for your timeline and budget.",
     features: [
@@ -28,7 +29,8 @@ export const services: Service[] = [
     id: "domestic-courier",
     slug: "domestic-courier",
     title: "Domestic Courier",
-    shortDescription: "Fast, reliable parcel delivery across India and the UK.",
+    shortDescription:
+      "Fast, reliable parcel delivery across India and the UK, with same-city and next-day options in major metros.",
     description:
       "Same-day, next-day, and standard domestic shipping for businesses and individuals. Our local partner network ensures coverage in metro areas and tier-2 cities.",
     features: [
@@ -43,7 +45,8 @@ export const services: Service[] = [
     id: "freight-cargo",
     slug: "freight-cargo",
     title: "Freight & Cargo",
-    shortDescription: "Air, sea, and road freight for commercial and industrial shipments.",
+    shortDescription:
+      "Air, sea, and road freight for commercial and industrial shipments, including full-container and less-than-container loads.",
     description:
       "Move pallets, containers, and heavy cargo with end-to-end freight forwarding. We handle documentation, carrier booking, and milestone tracking for import and export cargo.",
     features: [
@@ -58,7 +61,8 @@ export const services: Service[] = [
     id: "document-express",
     slug: "document-express",
     title: "Document Express",
-    shortDescription: "Secure, priority delivery for legal, visa, and business documents.",
+    shortDescription:
+      "Secure, priority delivery for legal, visa, and business documents, with signature confirmation on request.",
     description:
       "When documents cannot wait, our express document service prioritizes speed and chain-of-custody. Ideal for visa applications, contracts, and time-sensitive paperwork.",
     features: [
@@ -73,7 +77,8 @@ export const services: Service[] = [
     id: "ecommerce-shipping",
     slug: "ecommerce-shipping",
     title: "E-commerce Shipping",
-    shortDescription: "Cross-border fulfillment and bulk shipping for online sellers.",
+    shortDescription:
+      "Cross-border fulfillment and bulk shipping rates for online sellers, with volume discounts as your order count grows.",
     description:
       "Scale your e-commerce business with consolidated rates, bulk label generation, and returns management. We integrate with major marketplaces and shopping platforms.",
     features: [

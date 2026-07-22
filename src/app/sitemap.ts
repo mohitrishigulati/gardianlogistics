@@ -4,7 +4,18 @@ import { siteConfig } from "@/data/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteConfig.url;
-  const staticPages = ["", "/services", "/track", "/quote", "/about", "/contact", "/faq", "/blog"];
+  const staticPages = [
+    "",
+    "/services",
+    "/track",
+    "/quote",
+    "/about",
+    "/contact",
+    "/faq",
+    "/blog",
+    "/privacy",
+    "/terms",
+  ];
 
   return [
     ...staticPages.map((path) => ({

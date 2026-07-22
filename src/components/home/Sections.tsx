@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { clientLogos, partners, testimonials } from "@/data/partners";
-import { trackingSteps } from "@/data/site";
+import { partners } from "@/data/partners";
+import { companyStats, siteConfig, trackingSteps } from "@/data/site";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export function HowTrackingWorks() {
@@ -57,50 +57,35 @@ export function PartnerStrip() {
   );
 }
 
-export function Testimonials() {
+export function CompanyStats() {
   return (
     <section className="section-padding bg-white">
       <div className="container-site">
         <SectionHeading
-          eyebrow="Testimonials"
-          title="Trusted by Businesses Worldwide"
+          eyebrow="Why Gardian"
+          title="Trusted Since 2015"
+          description="Real numbers from a decade of international shipping — no invented reviews, just the facts."
           align="center"
           className="mb-12"
         />
         <div className="grid gap-6 md:grid-cols-3">
-          {testimonials.map((t) => (
-            <blockquote
-              key={t.id}
-              className="rounded-xl border border-navy-100 bg-surface p-6"
+          {companyStats.map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-xl border border-navy-100 bg-surface p-8 text-center"
             >
-              <p className="text-sm leading-relaxed text-navy-700">&ldquo;{t.quote}&rdquo;</p>
-              <footer className="mt-4 border-t border-navy-100 pt-4">
-                <cite className="not-italic">
-                  <span className="block text-sm font-semibold text-navy-900">{t.author}</span>
-                  <span className="text-xs text-navy-500">
-                    {t.role}, {t.company}
-                  </span>
-                </cite>
-              </footer>
-            </blockquote>
+              <p className="text-3xl font-bold text-navy-900">{stat.label}</p>
+              <p className="mt-3 text-sm leading-relaxed text-navy-600">{stat.description}</p>
+            </div>
           ))}
         </div>
-        <div className="mt-12">
-          <p className="mb-4 text-center text-xs font-semibold uppercase tracking-wider text-navy-400">
-            Clients We Serve
-          </p>
-          <ul className="flex flex-wrap items-center justify-center gap-4">
-            {clientLogos.map((logo) => (
-              <li
-                key={logo.id}
-                className="flex h-10 w-16 items-center justify-center rounded bg-navy-50 text-xs font-bold text-navy-500"
-                title={logo.name}
-              >
-                {logo.initials}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-navy-500">
+          Have you shipped with us? We&apos;d love a one-line quote for our website —{" "}
+          <Link href="/contact" className="font-medium text-accent-600 hover:underline">
+            get in touch
+          </Link>
+          .
+        </p>
       </div>
     </section>
   );
@@ -114,8 +99,8 @@ export function CTASection() {
           Ready to Ship? Get Your Best Rate Today.
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-lg text-navy-200">
-          Tell us about your shipment and our team will find the most competitive rate across
-          our global carrier network — usually within 2 business hours.
+          Tell us about your shipment and our team will find the most competitive rate across our
+          carrier network — usually within {siteConfig.quoteResponseTime}.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <Link href="/quote" className="btn-primary px-8 py-3 text-base">

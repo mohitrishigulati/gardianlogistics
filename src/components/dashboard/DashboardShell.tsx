@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { Logo } from "@/components/ui/Logo";
 import { ROLE_LABELS } from "@/lib/auth/roles";
+import { DashboardSupportFooter } from "@/components/dashboard/DashboardSupportFooter";
 
 interface NavItem {
   href: string;
@@ -71,7 +72,10 @@ export function DashboardShell({ title, nav, children }: DashboardShellProps) {
           </nav>
         </aside>
 
-        <main className="min-w-0 flex-1">{children}</main>
+        <main className="min-w-0 flex-1">
+          {children}
+          <DashboardSupportFooter />
+        </main>
       </div>
     </div>
   );

@@ -4,12 +4,15 @@ export const siteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://gardianlogistics.in",
   tagline: "Global Shipping. Best Rates. Trusted Since 2015.",
   description:
-    "Gardian Logistics is an international courier and freight forwarding company with offices in New Delhi and London. We partner with leading global carriers to deliver competitive rates and reliable tracking worldwide.",
+    "Gardian Logistics connects you to leading global carrier partners, so your international shipments move faster and cost less — with real-time tracking and a team that actually picks up the phone.",
+  heroSubhead:
+    "Gardian Logistics connects you to leading global carrier partners, so your international shipments move faster and cost less — with real-time tracking and a team that actually picks up the phone.",
+  quoteResponseTime: "2 business hours",
   founded: 2015,
-  email: "info@gardianlogistics.in",
+  email: "contact@gardianlogistics.in",
   phone: {
     india: "+91 11 4567 8900",
-    uk: "+44 20 7946 0958",
+    uk: "+44 7847 307527",
   },
   whatsapp: "+919876543210",
   social: {
@@ -47,12 +50,20 @@ export const trackingSteps = [
   },
   {
     step: 2,
-    title: "We Query Carriers",
-    description: "Our system identifies the carrier and fetches real-time status updates.",
+    title: "We Query the Carrier",
+    description:
+      "We identify the carrier handling your shipment and pull its live status.",
   },
   {
     step: 3,
     title: "Track Every Milestone",
-    description: "View pickup, transit, customs, and delivery progress on one timeline.",
+    description:
+      "See pickup, transit, customs, and delivery progress in one timeline.",
   },
+];
+
+export const companyStats = [
+  { label: "10+ Years", description: "Shipping internationally since 2015" },
+  { label: "220+ Countries", description: "Reach through our carrier network" },
+  { label: "India & UK Hubs", description: "On-the-ground coordination" },
 ];

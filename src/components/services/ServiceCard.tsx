@@ -62,7 +62,7 @@ export function ServicesOverview() {
         <SectionHeading
           eyebrow="Our Services"
           title="Shipping Solutions for Every Need"
-          description="From express documents to full container loads, Gardian Logistics connects you to the best carrier rates across our global partner network."
+          description="From urgent documents to full container loads, Gardian Logistics compares rates across our partner carrier network to find the fastest, most cost-effective option for every shipment — big or small."
           align="center"
           className="mb-12"
         />

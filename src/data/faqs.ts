@@ -69,6 +69,27 @@ export const faqs: FAQ[] = [
     answer:
       "Basic carrier liability applies by default. Additional declared-value insurance is available at booking. We recommend insurance for high-value shipments.",
   },
+  {
+    id: "general-3",
+    category: "general",
+    question: "Is Gardian Logistics a carrier itself, or do you use other couriers?",
+    answer:
+      "We're a logistics partner and aggregator. We work with established global carriers to move your shipment, which means we can compare rates and routing options rather than being limited to one network's pricing.",
+  },
+  {
+    id: "track-3",
+    category: "tracking",
+    question: "My tracking number isn't showing results — what do I do?",
+    answer:
+      "Double-check the number for typos first. If it's a recent booking, allow up to 24 hours for the carrier to register the first scan. Still stuck? Contact us with your AWB number and we'll look it up directly.",
+  },
+  {
+    id: "customs-3",
+    category: "customs",
+    question: "Do you handle customs clearance?",
+    answer:
+      "Yes — our team prepares and reviews customs documentation for international shipments to reduce the chance of delays at the border.",
+  },
 ];
 
 export const faqCategories = [

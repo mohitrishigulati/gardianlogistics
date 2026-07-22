@@ -88,9 +88,19 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-navy-800 pt-8 sm:flex-row">
-          <p className="text-sm text-navy-400">
-            &copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
-          </p>
+          <div className="flex flex-col items-center gap-2 sm:items-start">
+            <p className="text-sm text-navy-400">
+              &copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:justify-start">
+              <Link href="/privacy" className="text-sm text-navy-400 transition hover:text-accent-400">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="text-sm text-navy-400 transition hover:text-accent-400">
+                Terms of Service
+              </Link>
+            </div>
+          </div>
           <div className="flex items-center gap-4">
             <a
               href={siteConfig.social.linkedin}

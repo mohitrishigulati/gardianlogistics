@@ -1,9 +1,9 @@
 import { Hero, TrustBar } from "@/components/home/Hero";
 import {
   CTASection,
+  CompanyStats,
   HowTrackingWorks,
   PartnerStrip,
-  Testimonials,
 } from "@/components/home/Sections";
 import { ServicesOverview } from "@/components/services/ServiceCard";
 import { createMetadata } from "@/lib/metadata";
@@ -23,7 +23,7 @@ export default function HomePage() {
       <ServicesOverview />
       <HowTrackingWorks />
       <PartnerStrip />
-      <Testimonials />
+      <CompanyStats />
       <CTASection />
     </>
   );
